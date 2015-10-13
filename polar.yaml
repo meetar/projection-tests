@@ -1,0 +1,121 @@
+cameras:
+    perspective:
+        type: perspective
+        vanishing_point: [0, -500]
+lights:
+    directional1:
+        type: directional
+        direction: [.1, .5, -1]
+        diffuse: .7
+        ambient: .5
+styles:
+    stereo:
+        base: polygons
+        animated: true
+        shaders:
+            defines:
+                EARTH_RADIUS: 6378137.0 //radius of ellipsoid, WGS84
+                PI: 3.14159265358979323846
+                HALF_PI: 1.570796327
+                QUARTER_PI: .785398163
+                deg2rad(d): (d)*PI/180.0
+                rad2deg(d): (d)*180.0/PI
+            blocks:
+                global: |
+                    // http://wiki.openstreetmap.org/wiki/Mercator
+                    float y2lat_m (float y) { return rad2deg(2.0*atan(exp((y/EARTH_RADIUS)))-HALF_PI); }
+                    float x2lon_m (float x) { return rad2deg(x/EARTH_RADIUS); }
+
+                    float lat2y_m (float lat) { return EARTH_RADIUS*log(tan(QUARTER_PI+ deg2rad(lat)/2.0)); }
+                    float lon2x_m (float lon) { return deg2rad(lon)*EARTH_RADIUS; }
+
+                    // vec2 stereographic(float lat, float lng, float a, float e, float phi_c, float lambda_0) {
+                    vec2 stereographic(float lat, float lng, float phi_c, float lambda_0) {
+                        float e=0.08181919; //eccentricity, WGS84
+                        // float phi_c=70.; //standard parallel, latitude of true scale
+                        // float lambda_0=0.; //meridian along positive Y axis
+
+                        float phi = lat; // this convention varies --
+                        float lambda = lng; // sometimes these are switched
+
+                        // convert to radians
+                        phi=deg2rad(phi);
+                        phi_c=deg2rad(phi_c);
+                        lambda=deg2rad(lambda);
+                        lambda_0=deg2rad(lambda_0);
+                        
+                        float pm = 1.;
+                        // if the standard parallel is in S.Hemi., switch signs.
+                        if (phi_c < 0.) {
+                            pm=-1.; //plus or minus, north lat. or south
+                            phi=-phi;
+                            phi_c=-phi_c;
+                            lambda=-lambda;
+                            lambda_0=-lambda_0;
+                        }
+                        
+                        float t=tan(PI/4.-phi/2.)/pow(((1.-e*sin(phi))/(1.+e*sin(phi))),(e/2.));
+                        float t_c=tan(PI/4. - phi_c/2.)/pow(((1.-e*sin(phi_c))/(1.+e*sin(phi_c))),(e/2.));
+                        float m_c=cos(phi_c)/sqrt(pow(1.-pow(e,2.)*(sin(phi_c)),2.));
+                        float rho=EARTH_RADIUS*m_c*t/t_c; //true scale at lat phi_c
+
+                        float m=cos(phi)/sqrt(pow(1.-pow(e,2.)*(sin(phi)),2.));
+                        float x=pm*rho*sin(lambda-lambda_0);
+                        float y=-pm*rho*cos(lambda - lambda_0);
+                        float k=rho/(EARTH_RADIUS*m);
+
+                        return vec2(x, y) / 1.;
+                    }
+
+                    float flip(float lat) {
+                        if (lat > 0.) return mod(lat + 9455000., 18910000.) - 9455000.;
+                        if (lat <= 0.) return mod(lat - 9455000., 18910000.) + 9455000.;
+                    }
+
+
+                position: |
+                    // mercator position of the current vertex, u_map_position = center of screen,
+                    // position.xy = vertex screen position in meters from the center of the screen
+                    vec2 mercator = u_map_position.xy + position.xy;
+                    //float lat = y2lat_m(flip(mercator.y + u_map_position.y));
+                    //float lat = y2lat_m(mercator.y + u_map_position.y);
+                    float lat = y2lat_m(mercator.y);
+                    float lon = x2lon_m(mercator.x);
+
+                    // Latitude_Of_Origin
+                    float centerlat = y2lat_m(u_map_position.y);
+                    // Central_Meridian
+                    float centerlon = x2lon_m(u_map_position.x);
+
+                    // position.xy = stereographic(lat, lon);
+                    position.xy = stereographic(lat, lon, centerlat, centerlon);
+
+    stereolines:
+        base: lines
+        mix: stereo
+sources:
+    osm:
+        type: TopoJSONTiles
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-_vxMzew
+layers:
+    earth:
+        data: { source: osm }
+        draw:
+            stereo:
+                order: 1
+                color: purple
+                width: 3px
+    water:
+        data: { source: osm }
+        draw:
+            stereo:
+                order: 2
+                color: pink
+                width: 1px
+    boundaries:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 10
+                color: cyan
+                width: 3px
