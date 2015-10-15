@@ -1,0 +1,85 @@
+cameras:
+    perspective:
+        type: perspective
+        vanishing_point: [0, -500]
+styles:
+    stereo:
+        lighting: false
+        base: polygons
+        shaders:
+            defines:
+                EARTH_RADIUS: 6378137.0 //radius of ellipsoid, WGS84
+                PI: 3.14159265358979323846
+                HALF_PI: 1.570796327
+                QUARTER_PI: .785398163
+                deg2rad(d): (d)*PI/180.0
+                rad2deg(d): (d)*180.0/PI
+            blocks:
+                global: |
+                    // http://wiki.openstreetmap.org/wiki/Mercator
+                    float y2lat_m (float y) { return rad2deg(2.0*atan(exp((y/EARTH_RADIUS)))-HALF_PI); }
+                    float x2lon_m (float x) { return rad2deg(x/EARTH_RADIUS); }
+
+                    float lat2y_m (float lat) { return EARTH_RADIUS*log(tan(QUARTER_PI+ deg2rad(lat)/2.0)); }
+                    float lon2x_m (float lon) { return deg2rad(lon)*EARTH_RADIUS; }
+
+                    float flip(float lat) {
+                        if (lat > 0.) return mod(lat + 9455000., 18910000.) - 9455000.;
+                        if (lat <= 0.) return mod(lat - 9455000., 18910000.) + 9455000.;
+                    }
+
+                    vec2 oblique(float lat, float lon) {
+                        float coslat = cos(lat);
+                        float coslon = cos(lon);
+                        float k = 1. / (1. + coslat * coslon);
+                        return vec2(k * coslon * sin(lat), k * sin(lon));
+                    }
+
+
+                position: |
+                    // mercator position of the current vertex, u_map_position = center of screen,
+                    // position.xy = vertex screen position in meters from the center of the screen
+                    vec2 mercator = u_map_position.xy + position.xy;
+                    //float lat = y2lat_m(flip(mercator.y + u_map_position.y));
+                    //float lat = y2lat_m(mercator.y + u_map_position.y);
+                    float lat = y2lat_m(mercator.y);
+                    float lon = x2lon_m(mercator.x);
+
+                    // Latitude_Of_Origin
+                    float centerlat = y2lat_m(u_map_position.y);
+                    // Central_Meridian
+                    float centerlon = x2lon_m(u_map_position.x);
+
+                    // position.xy = polar(lat, lon);
+                    //position.xy = polar(lat, lon, centerlat, centerlon);
+                    position.xy = oblique(deg2rad(lat), deg2rad(lon)) * EARTH_RADIUS;
+
+    stereolines:
+        base: lines
+        mix: stereo
+sources:
+    osm:
+        type: TopoJSONTiles
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-_vxMzew
+layers:
+    earth:
+        data: { source: osm }
+        draw:
+            stereo:
+                order: 1
+                color: purple
+                width: 3px
+    water:
+        data: { source: osm }
+        draw:
+            stereo:
+                order: 2
+                color: pink
+                width: 1px
+    boundaries:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 10
+                color: cyan
+                width: 3px
