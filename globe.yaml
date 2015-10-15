@@ -55,7 +55,7 @@ styles:
                         float x = radius * cos(phi) * cos(theta);
                         float y = radius * cos(phi) * sin(theta);
                         float z = radius * sin(phi);
-
+                        // u_map_position.z;
                         return vec3(x,z,y);
                     }
                     
@@ -72,12 +72,12 @@ styles:
                     float centerlon = x2lon_m(u_map_position.x);
 
                     // bend map into globe
-                    position.xyz = latLongToVector3(lat, lon, centerlat, centerlon, 2.) * EARTH_RADIUS ;
+                    position.xyz = latLongToVector3(lat, lon, centerlat, centerlon, 2.) * EARTH_RADIUS;
                     
                     // rotate globe with map navigation
                     position.xyz *= rotateY3D((-centerlon - 90.) * PI/180.0);
-                    position.xyz *= rotateX3D((-centerlat) * PI/180.0);
-                    
+                    position.xyz *= rotateX3D((centerlat) * -PI/180.0);
+
     stereolines:
         base: lines
         mix: stereo
@@ -106,4 +106,4 @@ layers:
             stereolines:
                 order: 10
                 color: cyan
-                width: 3px
+                width: 1px
