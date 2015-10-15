@@ -2,7 +2,7 @@ cameras:
     perspective:
         type: perspective
         vanishing_point: [0, 0]
-        fov: 1 # perspective correction
+        fov: .00001 # perspective correction
 styles:
     stereo:
         lighting: false
