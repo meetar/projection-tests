@@ -1,0 +1,153 @@
+cameras:
+    perspective:
+        type: perspective
+        vanishing_point: [0, 0]
+        fov: 45. # perspective correction
+lights:
+    light:
+        type: directional
+styles:
+    stereo:
+        # lighting: false
+        base: polygons
+        animated: true
+        shaders:
+            defines:
+                EARTH_RADIUS: 6378137.0 //radius of ellipsoid, WGS84
+                EARTH_CIRC: 40075017.0 //circumference of earth
+                HALF_CIRC: 20037508.5 //half-circumference of earth
+                PI: 3.14159265358979323846
+                HALF_PI: 1.570796327
+                QUARTER_PI: .785398163
+                deg2rad(d): (d)*PI/180.0
+                rad2deg(d): (d)*180.0/PI
+            blocks:
+                global: |
+                    // http://wiki.openstreetmap.org/wiki/Mercator
+                    float y2lat_m (float y) { return rad2deg(2.0*atan(exp((y/EARTH_RADIUS)))-HALF_PI); }
+                    float x2lon_m (float x) { return rad2deg(x/EARTH_RADIUS); }
+
+                    float lat2y_m (float lat) { return EARTH_RADIUS*log(tan(QUARTER_PI+ deg2rad(lat)/2.0)); }
+                    float lon2x_m (float lon) { return deg2rad(lon)*EARTH_RADIUS; }
+
+                    // rotation matrix transformations
+                    mat3 rotateX3D(float phi){
+                        return mat3(
+                            vec3(1.,0.,0.),
+                            vec3(0.,cos(phi),-sin(phi)),
+                            vec3(0.,sin(phi),cos(phi))
+                            );
+                    }
+                    mat3 rotateY3D(float theta){
+                        return mat3(
+                            vec3(cos(theta),0.,-sin(theta)),
+                            vec3(0.,1.,0.),
+                            vec3(sin(theta),0.,cos(theta)));
+                    }
+                    mat3 rotateZ3D(float psi){
+                        return mat3(
+                            vec3(cos(psi),-sin(psi),0.),
+                            vec3(sin(psi),cos(psi),0.),
+                            vec3(0.,0.,1.)
+                            );
+                    }
+
+                    // convert the positions from a lat, lon to a position on a sphere.
+                    vec3 latLongToVector3(float lat, float lon, float centerlat, float centerlon, float radius) {
+                        // convert lat/long degrees to radians
+                        float phi = lat*PI/180.0;
+                        float theta = lon*PI/180.0;
+                        
+                        float x = radius * cos(phi) * cos(theta);
+                        float y = radius * cos(phi) * sin(theta);
+                        float z = radius * sin(phi);
+                        // u_map_position.z;
+                        return vec3(x,z,y);
+                    }
+
+                    // Pop-up effect - 3d in center of viewport, fading to 2d at edges
+                    vec4 popup (vec4 position, const vec2 center, const float radius) {
+                        if (position.z > 0.) {
+                            float cd = distance(position.xy, center);
+                            float popup_fade_inner = radius * 2. / 3.; // 0.5
+                            float popup_fade_outer = radius; // 0.75
+                            if (cd > popup_fade_inner) {
+                                position.z *= 1.0 - smoothstep(popup_fade_inner, popup_fade_outer, cd);
+                            }
+                        }
+                        return position;
+                    }
+
+                    float zoom = u_map_position.z;
+                    //uniform mat4 u_proj;
+                    float fliplat(float lat) {
+                        if (lat > 0.) return mod(lat + 9455000., 18910000.) - 9455000.;
+                        if (lat <= 0.) return mod(lat - 9455000., 18910000.) + 9455000.;
+                    }
+
+                position: |
+
+                    
+                    // handle low-zoom longitude-repetition
+                    // if (position.x > HALF_CIRC) position.x = HALF_CIRC;
+                    // if (position.x < -HALF_CIRC) position.x = -HALF_CIRC;
+                    
+                    vec4 p_globe = position;
+
+                    // set radius of sphere based on zoom
+                    float R_GLOBE = EARTH_RADIUS / pow(2., u_map_position.z);
+
+                    // clip backside geo
+                    float view_circ = R_GLOBE * PI;
+                    if (p_globe.x > view_circ) p_globe.x = view_circ;
+                    if (p_globe.x < -view_circ) p_globe.x = -view_circ;
+                    if (p_globe.y > view_circ) p_globe.y = view_circ;
+                    if (p_globe.y < -view_circ) p_globe.y = -view_circ;
+
+                    float r_dist = length(p_globe.xy)/1.;
+                    vec2 r_dir = p_globe.xy / r_dist;
+                    float theta = r_dist / R_GLOBE * 0.5;
+                    p_globe.z -= R_GLOBE - (R_GLOBE + a_position.z) * cos(theta);
+                    p_globe.xy = (R_GLOBE + a_position.z) * sin(theta) * r_dir;
+                    position = p_globe;
+                    position.xyz *= 8.;
+
+                                        
+    stereolines:
+        base: lines
+        mix: stereo
+sources:
+    osm:
+        type: TopoJSONTiles
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-_vxMzew
+layers:
+    earth:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 100
+                color: purple
+                width: 1px
+    water:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 1
+                color: pink
+                width: 1px
+    boundaries:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 200
+                color: cyan
+                width: 1px
+    buildings:
+        data: { source: osm }
+        draw:
+            stereo:
+                order: 10
+                color: cyan
+                width: 1px
+                extrude: true
+    
