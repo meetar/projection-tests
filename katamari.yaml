@@ -84,34 +84,28 @@ styles:
                         if (lat > 0.) return mod(lat + 9455000., 18910000.) - 9455000.;
                         if (lat <= 0.) return mod(lat - 9455000., 18910000.) + 9455000.;
                     }
-
-                position: |
-
-                    
-                    // handle low-zoom longitude-repetition
-                    // if (position.x > HALF_CIRC) position.x = HALF_CIRC;
-                    // if (position.x < -HALF_CIRC) position.x = -HALF_CIRC;
-                    
-                    vec4 p_globe = position;
-
                     // set radius of sphere based on zoom
                     float R_GLOBE = EARTH_RADIUS / pow(2., u_map_position.z);
+                position: |
+                    vec4 p_globe = position;
 
                     // clip backside geo
-                    float view_circ = R_GLOBE * PI;
-                    if (p_globe.x > view_circ) p_globe.x = view_circ;
-                    if (p_globe.x < -view_circ) p_globe.x = -view_circ;
-                    if (p_globe.y > view_circ) p_globe.y = view_circ;
-                    if (p_globe.y < -view_circ) p_globe.y = -view_circ;
+                    float view_circ = R_GLOBE * 4.;
+                    if (p_globe.x > view_circ || p_globe.x < -view_circ || p_globe.y > view_circ || p_globe.y < -view_circ) p_globe.z = -R_GLOBE * 2.;
 
                     float r_dist = length(p_globe.xy)/1.;
                     vec2 r_dir = p_globe.xy / r_dist;
                     float theta = r_dist / R_GLOBE * 0.5;
                     p_globe.z -= R_GLOBE - (R_GLOBE + a_position.z) * cos(theta);
                     p_globe.xy = (R_GLOBE + a_position.z) * sin(theta) * r_dir;
+                    // if (p_globe.z < -R_GLOBE) p_globe.z = -R_GLOBE;
+                    // p_globe.z = -1000.;
                     position = p_globe;
                     position.xyz *= 8.;
-
+                color: |
+                    float R_GLOBE = EARTH_RADIUS / pow(2., u_map_position.z);
+                    // hide backside geo
+                    if (v_position.z <= -R_GLOBE * 8.) color.rgb = vec3(0.);
                                         
     stereolines:
         base: lines
@@ -125,29 +119,36 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 100
+                order: 1
                 color: purple
-                width: 1px
+                width: 1.5px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: 1
+                order: 2
                 color: pink
-                width: 1px
+                width: .4px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: 200
+                order: 3
                 color: cyan
-                width: 1px
+                width: .5px
+    roads:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 4
+                color: red
+                width: [[10,.5px], [14,10]]
+                extrude: true
     buildings:
         data: { source: osm }
         draw:
             stereo:
-                order: 10
+                order: 5
                 color: cyan
-                width: 1px
                 extrude: true
     
