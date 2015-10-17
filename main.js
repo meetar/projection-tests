@@ -32,8 +32,17 @@ map = (function () {
         {"keyboardZoomOffset" : .05}
     );
 
+    var style_file = 'globe.yaml';
+    var url_search = window.location.search.slice(1);
+    if (url_search.length > 0) {
+        var ext = url_search.lastIndexOf('yaml');
+        if (ext > -1) {
+            style_file = url_search.substr(0, ext + 4);
+        }
+    }
+
     var layer = Tangram.leafletLayer({
-        scene: 'scene.yaml',
+        scene: style_file,
         numWorkers: 2,
         attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
         unloadInvisibleTiles: false,
