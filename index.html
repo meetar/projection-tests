@@ -51,11 +51,16 @@
       window.addEventListener("hashchange",function(){parent.postMessage(window.location.hash, "*")});
     </script>
 
-    <!-- Mapzen map UI 
+    <!-- Mapzen map UI -->
     <script src='//s3.amazonaws.com/assets-staging.mapzen.com/ui/mapzen-ui.min.js'></script>
     <script>
-      MPZN.bug();
+    MPZN.bug({
+      name: 'Tangram',
+      link: 'https://mapzen.com/projects/tangram',
+      tweet: 'Check out this demo from @mapzen',
+      repo: 'https://github.com/meetar/test-docs2/'
+    });
     </script>
--->
+
   </body>
 </html>
