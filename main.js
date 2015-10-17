@@ -29,8 +29,7 @@ map = (function () {
     /*** Map ***/
 
     var map = L.map('map',
-        {"keyboardZoomOffset" : .05,
-        scrollWheelZoom: false}
+        {"keyboardZoomOffset" : .05}
     );
 
     var style_file = 'globe.yaml';
@@ -39,6 +38,10 @@ map = (function () {
         var ext = url_search.lastIndexOf('yaml');
         if (ext > -1) {
             style_file = url_search.substr(0, ext + 4);
+        }
+        if (url_search.lastIndexOf('noscroll') > -1) {
+            map.scrollWheelZoom.disable();
+            map.touchZoom.disable();
         }
     }
 
