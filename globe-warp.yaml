@@ -1,0 +1,57 @@
+cameras:
+    perspective:
+        type: perspective
+        vanishing_point: [0, 0]
+        fov: .00001 # perspective correction
+styles:
+    stereo:
+        animated: true
+        lighting: false
+        base: polygons
+        shaders:
+            blocks:
+                position: |
+                    position.y += sin(u_time + position.x/EARTH_RADIUS * 2.) * EARTH_RADIUS / 2.;
+    stereolines:
+        base: lines
+        mix: stereo
+sources:
+    osm:
+        type: TopoJSONTiles
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson?api_key=vector-tiles-_vxMzew
+layers:
+    earth:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 1
+                color: purple
+                width: 3px
+    water:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 2
+                color: pink
+                width: 1px
+    boundaries:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 3
+                color: cyan
+                width: 1px
+    roads:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 4
+                color: white
+                width: 1px
+    buildings:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 4
+                color: pink
+                width: 1px
