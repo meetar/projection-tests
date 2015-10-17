@@ -11,6 +11,7 @@ styles:
         shaders:
             defines:
                 EARTH_RADIUS: 6378137.0 //radius of ellipsoid, WGS84
+                HALF_CIRC: 20037508.5 //half-circumference of earth
                 PI: 3.14159265358979323846
                 HALF_PI: 1.570796327
                 QUARTER_PI: .785398163
@@ -61,6 +62,10 @@ styles:
                     }
                     
                 position: |
+                    // handle low-zoom longitude-repetition
+                    if (position.x > HALF_CIRC) position.x = HALF_CIRC;
+                    if (position.x < -HALF_CIRC) position.x = -HALF_CIRC;
+
                     // mercator position of the current vertex, u_map_position = center of screen,
                     // position.xy = vertex screen position in meters from the center of the screen
                     vec2 mercator = u_map_position.xy + position.xy;
