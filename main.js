@@ -29,7 +29,8 @@ map = (function () {
     /*** Map ***/
 
     var map = L.map('map',
-        {"keyboardZoomOffset" : .05}
+        {"keyboardZoomOffset" : .05,
+        scrollWheelZoom: false}
     );
 
     var style_file = 'globe.yaml';
