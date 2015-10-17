@@ -1,0 +1,26 @@
+sources:
+    osm:
+        type: TopoJSON
+        url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
+scene:
+    background:
+        color: lightgrey
+styles:
+    warp:
+        animated: true
+        base: lines
+        shaders:
+            defines:
+                EARTH_RADIUS: 6378137.0 //radius of ellipsoid, WGS84
+            blocks:
+                position: |
+                    position.y += sin(u_time + position.x/EARTH_RADIUS * 2.) * EARTH_RADIUS * .5;
+               
+layers:
+    water:
+        data: { source: osm }
+        draw:
+            warp:
+                order: 1
+                color: purple
+                width: 2px
