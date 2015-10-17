@@ -104,6 +104,20 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 10
+                order: 3
                 color: cyan
+                width: 1px
+    roads:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 4
+                color: white
+                width: 1px
+    buildings:
+        data: { source: osm }
+        draw:
+            stereolines:
+                order: 4
+                color: pink
                 width: 1px
