@@ -1,3 +1,6 @@
+# adapted from Matt Blair's katamari style
+# https://github.com/tangrams/tangram-es/blob/katamari/core/resources/polygon.vs
+
 cameras:
     perspective:
         type: perspective
