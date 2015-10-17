@@ -32,6 +32,15 @@ map = (function () {
         {"keyboardZoomOffset" : .05}
     );
 
+    var style_file = 'globe.yaml';
+    var url_search = window.location.search.slice(1);
+    if (url_search.length > 0) {
+        var ext = url_search.lastIndexOf('yaml');
+        if (ext > -1) {
+            style_file = url_search.substr(0, ext + 4);
+        }
+    }
+
     var layer = Tangram.leafletLayer({
         scene: 'scene.yaml',
         numWorkers: 2,
