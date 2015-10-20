@@ -65,14 +65,14 @@ layers:
     earth:
         data: { source: osm }
         draw:
-            stereo:
+            stereolines:
                 order: 1
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
-            stereo:
+            stereolines:
                 order: 2
                 color: pink
                 width: 1px
@@ -82,4 +82,4 @@ layers:
             stereolines:
                 order: 10
                 color: cyan
-                width: 3px
+                width: 10px
