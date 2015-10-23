@@ -1,2 +1,3 @@
-# test-docs2
-test documentation conversion
+# projection tests
+
+A series of experiments with warping space, using Tangram.
