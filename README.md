@@ -1,6 +1,6 @@
 # projection tests
 
-A series of experiments in warped space, using Tangram. The ones below work fairly well -- the other examples in this repo are "under development"
+A series of experiments in warped space, using [Tangram](http://mapzen.com/tangram). The ones below work fairly well -- the other examples in this repo are "under development"
 
 http://meetar.github.io/projection-tests/?globe.yaml
 
