@@ -9,6 +9,9 @@ cameras:
 lights:
     light:
         type: directional
+scene:
+    background:
+        color: black
 styles:
     stereo:
         # lighting: false

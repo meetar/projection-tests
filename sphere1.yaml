@@ -2,6 +2,9 @@ cameras:
     perspective:
         type: perspective
         vanishing_point: [0, -500]
+scene:
+    background:
+        color: black
 styles:
     stereo:
         lighting: false

@@ -3,6 +3,9 @@ cameras:
     perspective:
         type: perspective
         vanishing_point: [0, -500]
+scene:
+    background:
+        color: black
 lights:
     directional1:
         type: directional

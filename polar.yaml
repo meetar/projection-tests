@@ -8,6 +8,9 @@ lights:
         direction: [.1, .5, -1]
         diffuse: .7
         ambient: .5
+scene:
+    background:
+        color: black
 styles:
     stereo:
         base: polygons

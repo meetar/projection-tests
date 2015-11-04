@@ -3,6 +3,9 @@ cameras:
         type: perspective
         vanishing_point: [0, 0]
         fov: .00001 # perspective correction
+scene:
+    background:
+        color: black
 styles:
     stereo:
         lighting: false
