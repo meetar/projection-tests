@@ -15,12 +15,12 @@ styles:
             blocks:
                 position: |
                     position.y += sin(u_time + position.x/EARTH_RADIUS * 2.) * EARTH_RADIUS * .5;
-               
+
 layers:
     water:
         data: { source: osm }
         draw:
             warp:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 2px

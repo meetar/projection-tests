@@ -63,7 +63,7 @@ styles:
                         // convert lat/long degrees to radians
                         float phi = lat*PI/180.0;
                         float theta = lon*PI/180.0;
-                        
+
                         float x = radius * cos(phi) * cos(theta);
                         float y = radius * cos(phi) * sin(theta);
                         float z = radius * sin(phi);
@@ -125,28 +125,28 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 1.5px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: .4px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: 3
+                order: function() { return feature.sort_key; }
                 color: cyan
                 width: .5px
     roads:
         data: { source: osm }
         draw:
             stereolines:
-                order: 4
+                order: function() { return feature.sort_key; }
                 color: red
                 width: [[10,.5px], [14,10]]
                 extrude: true
@@ -154,7 +154,6 @@ layers:
         data: { source: osm }
         draw:
             stereo:
-                order: 5
+                order: function() { return feature.sort_key; }
                 color: cyan
                 extrude: true
-    

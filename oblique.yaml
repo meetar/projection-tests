@@ -69,20 +69,20 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: 1px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: 10
+                order: function() { return feature.sort_key; }
                 color: cyan
                 width: 10px

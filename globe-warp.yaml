@@ -56,14 +56,14 @@ styles:
                         // convert lat/long degrees to radians
                         float phi = (lat)*PI/180.0;
                         float theta = (lon)*PI/180.0;
-                        
+
                         float x = radius * cos(phi) * cos(theta);
                         float y = radius * cos(phi) * sin(theta);
                         float z = radius * sin(phi);
                         // u_map_position.z;
                         return vec3(x,z,y);
                     }
-                    
+
                 position: |
                     // handle low-zoom longitude-repetition
                     if (position.x > HALF_CIRC) position.x = HALF_CIRC;
@@ -82,7 +82,7 @@ styles:
 
                     // bend map into globe
                     vec3 globe = latLongToVector3(lat, lon, centerlat, centerlon, 2.) * EARTH_RADIUS;
-                    
+
                     // rotate globe with map navigation
                     globe *= rotateY3D((-centerlon - 90.) * PI/180.0);
                     globe *= rotateX3D((centerlat) * -PI/180.0);
@@ -101,34 +101,34 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: 1px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: 3
+                order: function() { return feature.sort_key; }
                 color: cyan
                 width: 1px
     roads:
         data: { source: osm }
         draw:
             stereolines:
-                order: 4
+                order: function() { return feature.sort_key; }
                 color: white
                 width: 1px
     buildings:
         data: { source: osm }
         draw:
             stereolines:
-                order: 4
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: 1px

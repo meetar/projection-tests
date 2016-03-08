@@ -46,7 +46,7 @@ styles:
                         phi_c=deg2rad(phi_c);
                         lambda=deg2rad(lambda);
                         lambda_0=deg2rad(lambda_0);
-                        
+
                         float pm = 1.;
                         // if the standard parallel is in S.Hemi., switch signs.
                         if (phi_c < 0.) {
@@ -56,7 +56,7 @@ styles:
                             lambda=-lambda;
                             lambda_0=-lambda_0;
                         }
-                        
+
                         float t=tan(PI/4.-phi/2.)/pow(((1.-e*sin(phi))/(1.+e*sin(phi))),(e/2.));
                         float t_c=tan(PI/4. - phi_c/2.)/pow(((1.-e*sin(phi_c))/(1.+e*sin(phi_c))),(e/2.));
                         float m_c=cos(phi_c)/sqrt(pow(1.-pow(e,2.)*(sin(phi_c)),2.));
@@ -105,20 +105,20 @@ layers:
         data: { source: osm }
         draw:
             stereo:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
             stereo:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: 1px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: 10
+                order: function() { return feature.sort_key; }
                 color: cyan
                 width: 3px

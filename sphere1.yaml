@@ -43,7 +43,7 @@ styles:
                         float phi = (lat)*PI/180.0;
                         // float theta = (lon-180.0)*PI/180.0; // not sure why that -180 is there
                         float theta = (lon)*PI/180.0; // this makes the shader work for regular geo too
-                        
+
                         float x = radius * cos(phi) * cos(theta);
                         float y = radius * cos(phi) * sin(theta);
                         float z = radius * sin(phi);
@@ -53,7 +53,7 @@ styles:
                         // i don't know why it has to be negative :P
                         return vec3(x,z,y);
                     }
-                    
+
                 position: |
                     // mercator position of the current vertex, u_map_position = center of screen,
                     // position.xy = vertex screen position in meters from the center of the screen
@@ -62,11 +62,6 @@ styles:
                     //float lat = y2lat_m(mercator.y + u_map_position.y);
                     float lat = y2lat_m(mercator.y);
                     float lon = x2lon_m(mercator.x);
-
-
-                    
-
-
 
                     // Latitude_Of_Origin
                     float centerlat = y2lat_m(u_map_position.y);
@@ -90,20 +85,20 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: 1
+                order: function() { return feature.sort_key; }
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: 2
+                order: function() { return feature.sort_key; }
                 color: pink
                 width: 1px
     # boundaries:
     #     data: { source: osm }
     #     draw:
     #         stereolines:
-    #             order: 10
+    #             order: function() { return feature.sort_key; }
     #             color: cyan
     #             width: 3px
