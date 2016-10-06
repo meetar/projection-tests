@@ -20,7 +20,6 @@ styles:
                 QUARTER_PI: .785398163
                 deg2rad(d): (d)*PI/180.0
                 rad2deg(d): (d)*180.0/PI
-                TAU: 6.2831853071795862
             blocks:
                 global: |
                     // http://wiki.openstreetmap.org/wiki/Mercator
@@ -146,14 +145,3 @@ layers:
         draw:
             textures:
                 order: 0
-            #     color: '#555'
-            # lines:
-            #     order: 3
-            #     color: white
-            #     width: [[2,0px],[5,1px]]
-    # water:
-    #     data: { source: osm }
-    #     draw:
-    #         textures:
-    #             order: 1
-    #             color: '#ddd'
