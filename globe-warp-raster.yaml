@@ -100,7 +100,7 @@ styles:
 sources:
     osm:
         type: TopoJSON
-        url:  https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=mapzen-QF1osLn
+        url:  https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=mapzen-tDHBHDp
     earth:
         type: Raster
         url:  https://crossorigin.me/https://s3.amazonaws.com/com.modestmaps.bluemarble/{z}-r{y}-c{x}.jpg
