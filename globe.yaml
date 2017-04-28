@@ -100,6 +100,7 @@ layers:
                 width: 3px
     water:
         data: { source: osm }
+        filter: { kind: lake }
         draw:
             stereolines:
                 order: function() { return feature.sort_key; }
