@@ -99,9 +99,7 @@ styles:
 sources:
     osm:
         type: TopoJSON
-        url:  https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson
-        url_params:
-            api_key: mapzen-tDHBHDp
+        url: https://meetar.github.io/mapzen-tiles/vector/v1/256/all/{z}/{x}/{y}.topojson
 layers:
     earth:
         data: { source: osm }
