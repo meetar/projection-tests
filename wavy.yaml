@@ -21,6 +21,6 @@ layers:
         data: { source: osm }
         draw:
             warp:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: purple
                 width: 2px

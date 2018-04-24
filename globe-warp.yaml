@@ -101,34 +101,34 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: purple
                 width: 3px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: pink
                 width: 1px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: cyan
                 width: 1px
     roads:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: white
                 width: 1px
     buildings:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: pink
                 width: 1px

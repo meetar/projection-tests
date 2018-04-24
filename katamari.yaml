@@ -125,28 +125,28 @@ layers:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: purple
                 width: 1.5px
     water:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: pink
                 width: .4px
     boundaries:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: cyan
                 width: .5px
     roads:
         data: { source: osm }
         draw:
             stereolines:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: red
                 width: [[10,.5px], [14,10]]
                 extrude: true
@@ -154,6 +154,6 @@ layers:
         data: { source: osm }
         draw:
             stereo:
-                order: function() { return feature.sort_key; }
+                order: function() { return feature.sort_key || 0; }
                 color: cyan
                 extrude: true
